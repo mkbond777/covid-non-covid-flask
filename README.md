@@ -1,5 +1,5 @@
-# cat-dog-flask
-cat dog neural network implemented into website using flask
+# covid-non-covid-flask
+covid-non-covid neural network deployed into website using flask
 
 to run:
 just clone or download 
