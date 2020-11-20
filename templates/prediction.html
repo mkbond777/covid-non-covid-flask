@@ -19,7 +19,8 @@
             {%endif%}
 
         </div>
-{#            <h1>acc<br> covid: <span>{{data[0]}}</span> <br>non-covid: <span>{{data[1]}}</span><br> </h1>#}
+            <h3>Accuracy<br> covid: <span>{{'%0.2f'| format(data[1]|float)}}%</span> <br>non-covid:
+                <span>{{data[0]}}</span><br> </h3>
 
             <img src="{{url_for('load_img')}}" alt='img'>
             <a href="/" class='btn'>go back</a>

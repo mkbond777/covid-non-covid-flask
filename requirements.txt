@@ -1,9 +1,12 @@
-numpy==1.18.1
-tensorflow==2.2.0
+numpy~=1.19.2
+tensorflow~=2.0.0
 Keras==2.3.1
-Flask==1.1.1
+Flask~=1.1.2
 gunicorn==20.0.4
 Werkzeug==0.16.0
 Jinja2==2.10.1
 itsdangerous==1.1.0
 MarkupSafe==1.1.1
+cv2
+
+pillow~=8.0.1

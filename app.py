@@ -1,9 +1,10 @@
 from flask import Flask, render_template, request, send_from_directory
-import cv2
 import keras
 from keras.preprocessing import image
+import cv2
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Dropout, Conv2D, MaxPooling2D, BatchNormalization, Flatten
+from tensorflow.keras.layers import Dense, Dropout, Conv2D, MaxPooling2D, Flatten
+import tensorflow as tf
 import numpy as np
 import os
 
@@ -13,28 +14,6 @@ from PIL import Image
 sys.modules['Image'] = Image
 
 model = Sequential()
-
-# model.add(Conv2D(32, (3, 3), activation='relu', input_shape=(128,128,3)))
-# model.add(BatchNormalization())
-# model.add(MaxPooling2D(pool_size=(2, 2)))
-# model.add(Dropout(0.25))
-
-# model.add(Conv2D(64, (3, 3), activation='relu'))
-# model.add(BatchNormalization())
-# model.add(MaxPooling2D(pool_size=(2, 2)))
-# model.add(Dropout(0.25))
-#
-# model.add(Conv2D(128, (3, 3), activation='relu'))
-# model.add(BatchNormalization())
-# model.add(MaxPooling2D(pool_size=(2, 2)))
-# model.add(Dropout(0.25))
-
-# model.add(Flatten())
-# model.add(Dense(512, activation='relu'))
-# model.add(BatchNormalization())
-# model.add(Dropout(0.5))
-# model.add(Dense(2, activation='softmax'))
-# model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
 
 
 model.add(Conv2D(16, kernel_size=(3, 3), activation="relu", input_shape=(224, 224, 3)))
@@ -59,20 +38,12 @@ model.add(Dense(64, activation="relu"))
 model.add(Dropout(0.25))
 model.add(Dense(1, activation="sigmoid"))
 
-model.compile(loss=keras.losses.binary_crossentropy, optimizer='adam', metrics=['accuracy'])
 
+model.compile(loss=keras.losses.binary_crossentropy, optimizer='adam', metrics=['accuracy'])
 basedir = os.path.abspath(os.path.dirname(__file__))
 model_path = os.path.join(basedir, 'static/covidFinal.h5')
 model.load_weights(model_path)
 
-# predicting images
-# img = image.load_img(os.path.join(basedir, 'static/.jpg'), target_size=(224, 224))
-# x = image.img_to_array(img)
-# x = np.expand_dims(x, axis=0)
-#
-# images = np.vstack([x])
-# classes = model.predict_classes(images, batch_size=10)
-# print(classes)
 
 
 
@@ -92,17 +63,18 @@ def home():
     img = request.files['image']
 
     img.save(os.path.join(basedir, 'static/{}.jpg').format(COUNT))
-    img_load = image.load_img(os.path.join(basedir, 'static/{}.jpg').format(COUNT),target_size=(224, 224))
 
-    img_arr = image.img_to_array(img_load)
-    img_arr = np.expand_dims(img_arr, axis=0)
+    img_arr = cv2.imread(os.path.join(basedir, 'static/{}.jpg').format(COUNT))
+    img_arr = cv2.resize(img_arr, (224,224))
+    img_arr = img_arr / 255.0
+    img_arr = img_arr.reshape(1, 224,224,3)
 
-    images = np.vstack([img_arr])
-    class_pred = model.predict_classes(images, batch_size=10)
+    prediction = model.predict(img_arr, batch_size=10)
 
-    value = class_pred[0,0]
+    value = round(prediction[0,0],2)
     print(value)
-    pred = np.array([value, 1-value])
+    pred = np.array([value, 1.0-value])
+    print(pred)
     COUNT += 1
     return render_template('prediction.html', data=pred)
 
