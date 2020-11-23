@@ -1,10 +1,8 @@
 from flask import Flask, render_template, request, send_from_directory
 import keras
-from keras.preprocessing import image
 import cv2
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout, Conv2D, MaxPooling2D, Flatten
-import tensorflow as tf
 import numpy as np
 import os
 
