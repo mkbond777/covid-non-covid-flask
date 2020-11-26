@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, send_from_directory
 import keras
-import cv2
+from keras.preprocessing import image
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout, Conv2D, MaxPooling2D, Flatten
 import numpy as np
@@ -10,11 +10,6 @@ import sys
 from PIL import Image
 
 sys.modules['Image'] = Image
-
-# from OpenSSL import SSL
-# context = SSL.Context(SSL.PROTOCOL_TLSv1_2)
-# context.use_privatekey_file('server.key')
-# context.use_certificate_file('server.crt')
 
 model = Sequential()
 
@@ -67,17 +62,17 @@ def home():
 
     img.save(os.path.join(basedir, 'static/{}.jpg').format(COUNT))
 
-    img_arr = cv2.imread(os.path.join(basedir, 'static/{}.jpg').format(COUNT))
-    img_arr = cv2.resize(img_arr, (224,224))
-    img_arr = img_arr / 255.0
-    img_arr = img_arr.reshape(1, 224,224,3)
+    img_load = image.load_img(os.path.join(basedir, 'static/{}.jpg').format(COUNT),target_size=(224, 224))
 
-    prediction = model.predict(img_arr, batch_size=10)
+    img_arr = image.img_to_array(img_load)
+    img_arr = np.expand_dims(img_arr, axis=0)
 
-    value = round(prediction[0,0],2)
+    images = np.vstack([img_arr])
+    class_pred = model.predict_classes(images, batch_size=10)
+
+    value = class_pred[0,0]
     print(value)
-    pred = np.array([value, 1.0-value])
-    print(pred)
+    pred = np.array([value, 1-value])
     COUNT += 1
     return render_template('prediction.html', data=pred)
 
@@ -91,3 +86,6 @@ def load_img():
 if __name__ == '__main__':
     #app.run(debug=True)
     app.run(threaded=True, port=5000)
+
+
+
