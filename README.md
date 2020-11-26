@@ -6,3 +6,9 @@ just clone or download
 open directory in cmd
 and type 'app.py'
 enjoy
+
+Referennce for heroku deployment:
+https://stackabuse.com/deploying-a-flask-application-to-heroku/
+
+Heroku url:
+https://covid-detection-xray.herokuapp.com/
