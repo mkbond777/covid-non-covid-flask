@@ -11,16 +11,16 @@
 
 
             {% if data[1] < 0.50 %}
-            <h1>I think its a Normal People X-ray</h1>
+            <h2>Congrats, covid-19 symptoms are not found in your x-ray</h2>
 
             {%else%}
-            <h1> looks like this person has covid symptoms </h1>
+            <h2> Covid-19 symptoms have been found in your x-ray</h2>
 
             {%endif%}
 
         </div>
-            <h3>Accuracy<br> covid: <span>{{'%0.2f'| format(data[1]|float)}}%</span> <br>non-covid:
-                <span>{{data[0]}}</span><br> </h3>
+{#            <h3>Accuracy<br> covid: <span>{{'%0.2f'| format(data[1]|float)}}%</span> <br>non-covid:#}
+{#                <span>{{data[0]}}</span><br> </h3>#}
 
             <img src="{{url_for('load_img')}}" alt='img'>
             <a href="/" class='btn'>go back</a>
